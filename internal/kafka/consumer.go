@@ -59,7 +59,6 @@ func (c *OrderConsumer) Consume(ctx context.Context) {
 func (c *OrderConsumer) processMessage(ctx context.Context, msg kafka.Message) {
 	log.Printf("Received message: %s", string(msg.Value))
 
-	// ВРЕМЕННО: распарсим как CompleteFakeOrder чтобы посмотреть структуру
 	var fakeOrder domain.CompleteFakeOrder
 	if err := json.Unmarshal(msg.Value, &fakeOrder); err != nil {
 		log.Printf("Error unmarshaling as CompleteFakeOrder: %v", err)
@@ -67,7 +66,6 @@ func (c *OrderConsumer) processMessage(ctx context.Context, msg kafka.Message) {
 	}
 	log.Printf("CompleteFakeOrder: %+v", fakeOrder)
 
-	// Преобразуем в domain.Order
 	order := convertFakeToDomainOrder(fakeOrder)
 
 	if err := c.service.SaveOrderFromKafka(ctx, order); err != nil {
@@ -78,7 +76,6 @@ func (c *OrderConsumer) processMessage(ctx context.Context, msg kafka.Message) {
 	log.Printf("Order processed successfully: %s", order.ID)
 }
 
-// Добавьте эту функцию преобразования
 func convertFakeToDomainOrder(fake domain.CompleteFakeOrder) *domain.Order {
 	// Преобразуем items
 	var items []domain.Item

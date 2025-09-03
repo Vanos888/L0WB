@@ -80,7 +80,6 @@ func main() {
 		log.Fatal("Server creation error: ", err)
 	}
 
-	// СОЗДАЕМ СВОЙ MUX
 	mux := http.NewServeMux()
 
 	webDir := "./web"
@@ -88,7 +87,6 @@ func main() {
 
 	// Обработка статических файлов
 	mux.Handle("/web/", http.StripPrefix("/web/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// Устанавливаем правильные MIME types
 		if strings.HasSuffix(r.URL.Path, ".js") {
 			w.Header().Set("Content-Type", "application/javascript")
 		} else if strings.HasSuffix(r.URL.Path, ".css") {
@@ -178,10 +176,8 @@ func main() {
 		})
 	})
 
-	// Ogen API routes (должны быть до SPA обработчика)
 	mux.Handle("/order/", srv)
 
-	// SPA обработчик для фронтенда - ДОЛЖЕН БЫТЬ ПОСЛЕДНИМ
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		// Если запрос к статическим файлам
 		if strings.HasPrefix(r.URL.Path, "/web/") {
@@ -189,7 +185,6 @@ func main() {
 			return
 		}
 
-		// Если запрос к API - пропускаем дальше
 		if strings.HasPrefix(r.URL.Path, "/order/get-order/") ||
 			strings.HasPrefix(r.URL.Path, "/generate") ||
 			strings.HasPrefix(r.URL.Path, "/order/order/") {
@@ -197,7 +192,6 @@ func main() {
 			return
 		}
 
-		// Для всех остальных путей отдаем index.html (SPA)
 		http.ServeFile(w, r, filepath.Join(webDir, "index.html"))
 	})
 
