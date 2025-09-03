@@ -1,0 +1,247 @@
+openapi: 3.1.0
+info:
+  title: L0WB
+  description: Апи для получения Ордеров
+  version: 1.0.0
+
+servers:
+  - description: local
+    url: http://localhost:8080
+
+paths:
+  /order/get-order:
+    post:
+      operationId: GetOrder
+      summary: Получение ордера по ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GetOrderRequest'
+      responses:
+        '200':
+          description: Ордер получен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetOrderResponse'
+      tags:
+        - Order
+
+components:
+  schemas:
+    GetOrderRequest:
+      type: object
+      required:
+        - order_uid
+      properties:
+        order_uid:
+          type: string
+          example: "b563feb7b2b84b6test"
+
+    GetOrderResponse:
+      type: object
+      required:
+        - success
+        - timestamp
+        - data
+      properties:
+        success:
+          type: boolean
+          example: true
+        data:
+          $ref: '#/components/schemas/Order'
+        timestamp:
+          type: string
+          format: date-time
+          example: "2024-01-15T10:30:00Z"
+
+    Order:
+      type: object
+      required:
+        - order_uid
+        - track_number
+        - entry
+        - locale
+        - internal_signature
+        - customer_id
+        - delivery_service
+        - shardkey
+        - sm_id
+        - date_created
+        - oof_shard
+        - delivery
+        - payment
+        - items
+      properties:
+        order_uid:
+          type: string
+          example: "b563feb7b2b84b6test"
+        track_number:
+          type: string
+          example: "WBILMTESTTRACK"
+        entry:
+          type: string
+          example: "WBIL"
+        locale:
+          type: string
+          example: "en"
+        internal_signature:
+          type: string
+          example: ""
+        customer_id:
+          type: string
+          example: "test"
+        delivery_service:
+          type: string
+          example: "meest"
+        shardkey:
+          type: string
+          example: "9"
+        sm_id:
+          type: integer
+          example: 99
+        date_created:
+          type: string
+          format: date-time
+          example: "2021-11-26T06:22:19Z"
+        oof_shard:
+          type: string
+          example: "1"
+        delivery:
+          $ref: '#/components/schemas/Delivery'
+        payment:
+          $ref: '#/components/schemas/Payment'
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Item'
+
+    Delivery:
+      type: object
+      required:
+        - name
+        - phone
+        - zip
+        - city
+        - address
+        - region
+        - email
+      properties:
+        name:
+          type: string
+          example: "Test Testov"
+        phone:
+          type: string
+          example: "+9720000000"
+        zip:
+          type: string
+          example: "2639809"
+        city:
+          type: string
+          example: "Kiryat Mozkin"
+        address:
+          type: string
+          example: "Ploshad Mira 15"
+        region:
+          type: string
+          example: "Kraiot"
+        email:
+          type: string
+          format: email
+          example: "test@gmail.com"
+
+    Payment:
+      type: object
+      required:
+        - transaction
+        - request_id
+        - currency
+        - provider
+        - amount
+        - payment_dt
+        - bank
+        - delivery_cost
+        - goods_total
+        - custom_fee
+      properties:
+        transaction:
+          type: string
+          example: "b563feb7b2b84b6test"
+        request_id:
+          type: string
+          example: ""
+        currency:
+          type: string
+          example: "USD"
+        provider:
+          type: string
+          example: "wbpay"
+        amount:
+          type: integer
+          example: 1817
+        payment_dt:
+          type: integer
+          example: 1637907727
+        bank:
+          type: string
+          example: "alpha"
+        delivery_cost:
+          type: integer
+          example: 1500
+        goods_total:
+          type: integer
+          example: 317
+        custom_fee:
+          type: integer
+          example: 0
+
+    Item:
+      type: object
+      required:
+        - chrt_id
+        - track_number
+        - price
+        - rid
+        - name
+        - sale
+        - size
+        - total_price
+        - nm_id
+        - brand
+        - status
+      properties:
+        chrt_id:
+          type: integer
+          example: 9934930
+        track_number:
+          type: string
+          example: "WBILMTESTTRACK"
+        price:
+          type: integer
+          example: 453
+        rid:
+          type: string
+          example: "ab4219087a764ae0btest"
+        name:
+          type: string
+          example: "Mascaras"
+        sale:
+          type: integer
+          example: 30
+        size:
+          type: string
+          example: "0"
+        total_price:
+          type: integer
+          example: 317
+        nm_id:
+          type: integer
+          example: 2389212
+        brand:
+          type: string
+          example: "Vivienne Sabo"
+        status:
+          type: integer
+          example: 202

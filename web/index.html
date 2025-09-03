@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Information System</title>
+    <link rel="stylesheet" href="/web/style.css">
+</head>
+<body>
+<div class="container">
+    <header>
+        <h1>📦 Order Information System</h1>
+        <p>Введите ID заказа для получения информации</p>
+    </header>
+
+    <div class="search-section">
+        <div class="input-group">
+            <input
+                    type="text"
+                    id="orderIdInput"
+                    placeholder="Введите Order ID (например: b563feb7b2b84b6test)"
+                    autocomplete="off"
+            >
+            <button id="searchBtn">Поиск</button>
+        </div>
+        <div class="examples">
+            <small>Примеры ID: b563feb7b2b84b6test, WBILMTESTTRACK</small>
+        </div>
+    </div>
+
+    <div id="loading" class="loading hidden">
+        <div class="spinner"></div>
+        <span>Загрузка данных...</span>
+    </div>
+
+    <div id="error" class="error hidden">
+        <span id="errorMessage"></span>
+    </div>
+
+    <div id="result" class="result hidden">
+        <div class="order-header">
+            <h2>Информация о заказе</h2>
+            <span class="order-id" id="orderId"></span>
+        </div>
+
+        <div class="tabs">
+            <button class="tab active" data-tab="main">Основное</button>
+            <button class="tab" data-tab="delivery">Доставка</button>
+            <button class="tab" data-tab="payment">Оплата</button>
+            <button class="tab" data-tab="items">Товары</button>
+        </div>
+
+        <div class="tab-content">
+            <!-- Основная информация -->
+            <div id="tab-main" class="tab-pane active">
+                <div class="info-grid">
+                    <div class="info-item">
+                        <label>Track Number:</label>
+                        <span id="trackNumber"></span>
+                    </div>
+                    <div class="info-item">
+                        <label>Entry:</label>
+                        <span id="entry"></span>
+                    </div>
+                    <div class="info-item">
+                        <label>Locale:</label>
+                        <span id="locale"></span>
+                    </div>
+                    <div class="info-item">
+                        <label>Customer ID:</label>
+                        <span id="customerId"></span>
+                    </div>
+                    <div class="info-item">
+                        <label>Delivery Service:</label>
+                        <span id="deliveryService"></span>
+                    </div>
+                    <div class="info-item">
+                        <label>Shard Key:</label>
+                        <span id="shardKey"></span>
+                    </div>
+                    <div class="info-item">
+                        <label>SM ID:</label>
+                        <span id="smId"></span>
+                    </div>
+                    <div class="info-item">
+                        <label>Date Created:</label>
+                        <span id="dateCreated"></span>
+                    </div>
+                    <div class="info-item">
+                        <label>OOF Shard:</label>
+                        <span id="oofShard"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Информация о доставке -->
+            <div id="tab-delivery" class="tab-pane">
+                <div class="info-grid">
+                    <div class="info-item">
+                        <label>Name:</label>
+                        <span id="deliveryName"></span>
+                    </div>
+                    <div class="info-item">
+                        <label>Phone:</label>
+                        <span id="deliveryPhone"></span>
+                    </div>
+                    <div class="info-item">
+                        <label>Email:</label>
+                        <span id="deliveryEmail"></span>
+                    </div>
+                    <div class="info-item">
+                        <label>Zip:</label>
+                        <span id="deliveryZip"></span>
+                    </div>
+                    <div class="info-item">
+                        <label>City:</label>
+                        <span id="deliveryCity"></span>
+                    </div>
+                    <div class="info-item">
+                        <label>Address:</label>
+                        <span id="deliveryAddress"></span>
+                    </div>
+                    <div class="info-item">
+                        <label>Region:</label>
+                        <span id="deliveryRegion"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Информация об оплате -->
+            <div id="tab-payment" class="tab-pane">
+                <div class="info-grid">
+                    <div class="info-item">
+                        <label>Transaction:</label>
+                        <span id="paymentTransaction"></span>
+                    </div>
+                    <div class="info-item">
+                        <label>Request ID:</label>
+                        <span id="paymentRequestId"></span>
+                    </div>
+                    <div class="info-item">
+                        <label>Currency:</label>
+                        <span id="paymentCurrency"></span>
+                    </div>
+                    <div class="info-item">
+                        <label>Provider:</label>
+                        <span id="paymentProvider"></span>
+                    </div>
+                    <div class="info-item">
+                        <label>Amount:</label>
+                        <span id="paymentAmount"></span>
+                    </div>
+                    <div class="info-item">
+                        <label>Payment DT:</label>
+                        <span id="paymentDt"></span>
+                    </div>
+                    <div class="info-item">
+                        <label>Bank:</label>
+                        <span id="paymentBank"></span>
+                    </div>
+                    <div class="info-item">
+                        <label>Delivery Cost:</label>
+                        <span id="paymentDeliveryCost"></span>
+                    </div>
+                    <div class="info-item">
+                        <label>Goods Total:</label>
+                        <span id="paymentGoodsTotal"></span>
+                    </div>
+                    <div class="info-item">
+                        <label>Custom Fee:</label>
+                        <span id="paymentCustomFee"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Информация о товарах -->
+            <div id="tab-items" class="tab-pane">
+                <div id="itemsList" class="items-list">
+                    <!-- Товары будут добавляться динамически -->
+                </div>
+            </div>
+        </div>
+
+        <div class="response-info">
+            <small>Время ответа: <span id="responseTime">0</span>ms •
+                Источник: <span id="dataSource">кеш</span></small>
+        </div>
+    </div>
+</div>
+
+<script src="/web/script.js"></script>
+</body>
+</html>
