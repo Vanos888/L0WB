@@ -1,6 +1,7 @@
 package main
 
 import (
+	"L0WB/internal/config"
 	ogen_server "L0WB/internal/generated/servers/http/ordergen"
 	handler "L0WB/internal/handler/http"
 	"L0WB/internal/kafka"
@@ -38,18 +39,19 @@ func main() {
 		}
 	}
 
+	var cfg config.Config
 	ctx := context.Background()
 
 	// Инициализирую БД
-	conn, err := pgxpool.New(context.Background(), "postgres://Ivan:1q2w3e4r@127.0.0.1:5432/orders?sslmode=disable&pool_max_conns=10&pool_max_conn_lifetime=1h30m")
+	conn, err := pgxpool.New(context.Background(), cfg.PgDSN)
 	if err != nil {
 		log.Fatal("Database connection error: ", err)
 	}
 	defer conn.Close()
 
 	// Инициализирую Producer
-	kafkaBrokers := []string{"localhost:9092"}
-	kafkaTopic := "orders"
+	kafkaBrokers := []string{cfg.KafkaBrokers}
+	kafkaTopic := cfg.KafkaTopic
 	kafkaProducer := kafka.NewOrderProducer(kafkaBrokers, kafkaTopic)
 	defer kafkaProducer.Close()
 
@@ -200,7 +202,7 @@ func main() {
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 
 	server := http.Server{
-		Addr:    ":8081",
+		Addr:    cfg.ServerPort,
 		Handler: mux,
 	}
 
